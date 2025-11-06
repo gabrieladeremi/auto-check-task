@@ -10,6 +10,8 @@ import { LoanApplication } from './modules/loans/entities/loan.entity';
 import { ValuationProvider } from './integrations/valuation.provider';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { User } from './modules/users/entities/user.entity';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -22,8 +24,9 @@ import { AppService } from './app.service';
       database: 'database.sqlite',
       synchronize: true,
       logging: false,
-      entities: [LoanApplication, Vehicle, Valuation],
+      entities: [LoanApplication, User, Vehicle, Valuation],
     }),
+    AuthModule,
     VehiclesModule,
     ValuationsModule,
     LoansModule,
