@@ -12,6 +12,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { User } from './modules/users/entities/user.entity';
 import { AuthModule } from './modules/auth/auth.module';
+import { Offer } from './modules/offers/entities/offer.entity';
+import { OffersModule } from './modules/offers/offers.module';
 
 @Module({
   imports: [
@@ -24,12 +26,13 @@ import { AuthModule } from './modules/auth/auth.module';
       database: 'database.sqlite',
       synchronize: true,
       logging: false,
-      entities: [LoanApplication, User, Vehicle, Valuation],
+      entities: [Offer, LoanApplication, User, Vehicle, Valuation],
     }),
     AuthModule,
+    OffersModule,
+    LoansModule,
     VehiclesModule,
     ValuationsModule,
-    LoansModule,
   ],
   controllers: [AppController],
   providers: [AppService, ValuationProvider],

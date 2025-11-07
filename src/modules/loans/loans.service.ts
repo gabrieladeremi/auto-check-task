@@ -15,12 +15,15 @@ export class LoansService {
     private eligibilityService: EligibilityService,
   ) {}
 
-  async submitApplication(payload: {
-    applicantName: string;
-    applicantEmail: string;
-    vehicleId: string;
-    requestedAmount: number;
-  }) {
+  async submitApplication(
+    payload: {
+      applicantName: string;
+      applicantEmail: string;
+      vehicleId: string;
+      requestedAmount: number;
+    },
+    userId: string,
+  ) {
     const { applicantName, applicantEmail, vehicleId, requestedAmount } =
       payload;
 
@@ -59,6 +62,8 @@ export class LoansService {
     }
 
     const loan = this.loansRepo.create({
+      applicantId: userId,
+      applicant: { id: userId },
       applicantName,
       applicantEmail,
       vehicle,

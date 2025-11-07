@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Valuation } from './entities/valuation.entity';
 import { Vehicle } from '../vehicles/entities/vehicle.entity';
 import { ValuationProvider } from '../../integrations/valuation.provider';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class ValuationsService {
@@ -12,9 +13,12 @@ export class ValuationsService {
     private valuationProvider: ValuationProvider,
   ) {}
 
-  async fetchAndSave(vehicle: Vehicle) {
+  async fetchAndSave(vehicle: Vehicle, user?: User | null) {
     const last = await this.valuationsRepo.findOne({
-      where: { vehicle: { id: vehicle.id } as any },
+      where: {
+        vehicle: { id: vehicle.id } as any,
+        requestedBy: { id: user?.id },
+      },
       order: { fetchedAt: 'DESC' },
     });
 
@@ -30,7 +34,8 @@ export class ValuationsService {
     const res = await this.valuationProvider.lookupByVin(vehicle.vin, vehicle);
 
     const valuation = this.valuationsRepo.create({
-      vehicle,
+      vehicle: vehicle,
+      requestedBy: user!,
       estimatedValue: res.estimatedValue,
       sourceResponse: res.raw,
       source: res.source,

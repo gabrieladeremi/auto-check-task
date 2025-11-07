@@ -5,12 +5,16 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { Vehicle } from '../../vehicles/entities/vehicle.entity';
+import { Offer } from '../../offers/entities/offer.entity';
+import { User } from '../../users/entities/user.entity';
 
 export enum LoanStatus {
-  PENDING = 'pending',
   APPROVED = 'approved',
+  OFFERED = 'offered',
+  PENDING = 'pending',
   REJECTED = 'rejected',
 }
 
@@ -24,6 +28,12 @@ export class LoanApplication {
 
   @Column()
   applicantEmail: string;
+
+  @ManyToOne(() => User, { eager: true })
+  applicant: User;
+
+  @Column({ nullable: true })
+  applicantId: string;
 
   @ManyToOne(() => Vehicle, { eager: true })
   vehicle: Vehicle;
@@ -43,11 +53,17 @@ export class LoanApplication {
   @Column({ default: false })
   isLiquidated: boolean;
 
+  @Column({ type: 'int', default: 12 })
+  termMonths: number;
+
   @Column('float', { default: 0 })
   amountRepaid: number;
 
   @Column({ type: 'date', nullable: true })
   dueDate: Date;
+
+  @OneToMany(() => Offer, (o) => o.loanApplication)
+  offers: Offer[];
 
   @CreateDateColumn()
   createdAt: Date;

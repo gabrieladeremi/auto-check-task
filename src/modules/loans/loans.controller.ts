@@ -13,17 +13,20 @@ import { IngestLoanDto } from './dtos/ingest-loan.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 @Controller('api/v1/loans')
 export class LoansController {
   constructor(private loansService: LoansService) {}
 
   @Post()
-  async submit(@Body() body: IngestLoanDto) {
-    return this.loansService.submitApplication(body);
+  @UseGuards(JwtAuthGuard)
+  async submit(@Body() body: IngestLoanDto, @CurrentUser() user) {
+    return this.loansService.submitApplication(body, user.userId);
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   async get(@Param('id') id: string) {
     return this.loansService.getLoan(id);
   }
